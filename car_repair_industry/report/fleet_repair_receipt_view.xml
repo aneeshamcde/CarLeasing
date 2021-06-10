@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="fleet_repair_receipt_template_view">
+			<t t-call="web.external_layout">
+				<div class="page">
+					<br/><br/><br/><br/><br/>
+					<t t-foreach="docs" t-as="o">
+						<div class="row">
+							<div class="col-xs-5">
+								<table>
+									<tr>
+										<td style="width: 100%; height: 22px; padding-left:10px;">
+											<b><span>Client Address</span></b>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 100%;padding-left:10px;">
+											<span t-field="o.client_id.name"/>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 100%;padding-left:10px;">
+											<span t-field="o.client_id.street"/>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 100%;padding-left:10px;">
+											<span t-field="o.client_id.street2"/>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 100%;padding-left:10px;">
+											<div style="width: 100%">
+												<span style="width: 40%" t-field="o.client_id.city"/>,
+												<span style="width: 20%" t-field="o.client_id.state_id.code"/>,
+												<span style="width: 40%" t-field="o.client_id.zip"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 100%;padding-left:10px;">
+											<span t-field="o.client_id.country_id"/>
+										</td>
+									</tr>
+
+									<tr t-if="o.client_phone">
+										<td style="width: 100%;padding-left:10px;">
+											<span style="font-weight: bold;">Phone:</span>
+											<span t-field="o.client_phone"/>
+										</td>
+									</tr>
+									<!--tr t-if="o.phone">
+										<td style="width: 100%;padding-left:10px;">
+											<span style="font-weight: bold;">Contact Number:</span>
+											<span t-field="o.phone"/>
+										</td>
+									</tr-->
+									<tr t-if="o.client_mobile">
+										<td style="width: 100%;padding-left:10px;">
+											<span style="font-weight: bold;">Mobile:</span>
+											<span t-field="o.client_mobile"/>
+										</td>
+									</tr>
+									<tr t-if="o.client_email">
+										<td style="width: 100%;padding-left:10px;">
+											<span style="font-weight: bold;">Email:</span>
+											<span t-field="o.client_email"/>
+										</td>
+									</tr>
+									
+								</table>
+							</div>
+							<div class="col-xs-3">
+								<table style="width:100%">
+									<tr>
+										<td style="padding-left:10px; height: 22px; padding-top: 5px;">
+											<strong>Contact Name</strong>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding-left:10px; text-align: left;">
+											<span t-field="o.contact_name"/>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding-left:10px;">
+											<strong>Tel: </strong>
+											<span t-field="o.phone"/>
+										</td>
+									</tr>
+								</table>
+							</div>
+							
+							<div class="col-xs-3">
+								<table style="width:100%">
+									<tr style="height:22px;">
+										<td style="width:16%;padding:3px;padding-left:10px;">
+											<b><span >Date of Receipt</span></b>
+										</td>
+									</tr>
+									<tr style="height: 22px">
+										<td style="padding:3px;padding-left:10px;">
+											<!--<span t-esc="_get_date(o)"/> -->
+											<span t-field="o.receipt_date"/>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<h3 style="margin-top: 30px; font-weight: bold;">
+							<span t-if="o.sequence">Receipt  </span>
+							<span t-field="o.sequence"/>
+						</h3>		
+						<div>
+							<table style="width: 100%; margin-top: 50px;font-size:12;text-align: center">
+								<thead>
+									<tr style="height: 22px; border-bottom: 2px solid black;">
+										<th style="width:25%;padding:3px; text-align: left">
+											<b><span>CAR</span></b>
+										</th>
+										<th style="width:20%;padding:3px; text-align: center">
+											<b><span>MODEL NUMBER</span></b>
+										</th>
+										<th style="width:15%;padding:3px; text-align: center">
+											<b><span>SERIAL NUMBER</span></b>
+										</th>
+										<th style="width:15%;padding:3px; text-align: center">
+											<b><span>GUARANTEE</span></b>
+										</th>
+										<th style="width:25%;padding:3px; text-align: center">
+											<b><span>SERVICE TYPE</span></b>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr t-foreach="o.fleet_repair_line" t-as="line" style="height: 22px; border-color: #9D9D90;font-size:15">
+										<td style="padding:5px; text-align: left">
+											<span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+											<span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"></span>
+										</td>
+										<td style="padding:5px;">
+											<span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+											<span t-if="line.fleet_id is False and line.model_id.name" t-field="line.model_id.name"></span>
+										</td>
+
+										<td style="padding:5px;">
+											<span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+											<span t-if="line.fleet_id.name is False and line.vin_sn" t-field="line.vin_sn"></span>
+										</td>
+										<td style="padding:5px;">
+											<span t-field="line.guarantee"></span>
+										</td>
+										<td style="padding:5px;">
+											<span t-field="line.service_type"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div t-if="o.description" class="col-xs-12" style="margin-top:10%;width:100%">
+								<b>Note:</b><span t-field="o.description"></span>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 100px;">
+							<span style="font-size: 20.0; font-weight: bold;">SERVICE DETAILS:</span>
+						</div>
+						<div class="row">
+							<table style="width: 100%; margin-top: 20px;">
+								<tr t-foreach="o.fleet_repair_line" t-as="line">
+									<th style="width: 25%; height: 25px;border-right: 1px solid black;">
+										<b>
+											<span t-if="line.fleet_id" t-field="line.fleet_id.name"/>
+											<span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"/>
+										</b>
+									</th>
+									<td style="padding-left: 10px;">
+										<span t-field="line.service_detail"></span>
+									</td>
+								</tr>
+							</table>
+						</div>                        
+						<div class="col-xs-12" style="width:100%; margin-top: 300px;">
+							<table style="width: 100%;">	
+								<tr>					
+									<td>
+										<span style="border-top: 1px solid;">Signature of Reception</span>
+									</td>
+									<td>
+										<span style="border-top: 1px solid;float:right;">Signature of Client</span>
+									</td>							
+								</tr>
+							</table>
+						</div>						
+					
+					</t>
+				</div>
+			</t>
+		</template>
+
+		 <template id="machi_repa_rece_temp_id">
+			<t  t-call="web.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="car_repair_industry.fleet_repair_receipt_template_view" t-lang="o.client_id.lang"/>
+				</t>
+			</t>
+		</template>
+		
+		<!-- Inherit Sale Order Report -->
+		   <template id="report_sale_order_inherit" inherit_id="sale.report_saleorder_document">
+			<xpath expr="//div[hasclass('page')]/table[hasclass('o_main_table')]"
+				position="replace">
+				<table class="table table-sm">
+				   <thead>
+					<tr>
+						<th class="text-left"><span>Model#</span></th>
+						<th class="text-left"><span>License Plate</span></th>
+						<th class="text-left">Description</th>
+						<th class="text-right">Quantity</th>
+						<th class="text-right">Unit Price</th>
+						<th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+							<span>Disc.(%)</span>
+							<t t-set="colspan" t-value="colspan+1"/>
+						</th>
+						<th class="text-right">Taxes</th>
+						<th class="text-right">
+							<t groups="account.group_show_line_subtotals_tax_excluded">Amount</t>
+							<t groups="account.group_show_line_subtotals_tax_included">Total Price</t>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="sale_tbody">
+
+					<t t-set="current_subtotal" t-value="0"/>
+
+					<t t-foreach="doc.order_line" t-as="line">
+
+						<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+						<t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+						<tr t-att-class="'bg-200 font-weight-bold' if line.display_type == 'line_section' else 'font-italic' if line.display_type == 'line_note' else ''">
+							<t t-if="not line.display_type">
+								<td><span t-field="line.car_model"/></td>
+								<td><span t-field="line.license_plate"/></td>
+								<td><span t-field="line.name"/></td>
+								<td class="text-right">
+									<span t-field="line.product_uom_qty"/>
+									<span t-field="line.product_uom" groups="uom.group_uom"/>
+								</td>
+								<td class="text-right">
+									<span t-field="line.price_unit"/>
+								</td>
+								<td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+									<span t-field="line.discount"/>
+								</td>
+								<td class="text-right">
+									<span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
+								</td>
+								<td class="text-right">
+									<span t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+									<span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+								</td>
+							</t>
+							<t t-if="line.display_type == 'line_section'">
+								<td t-att-colspan="colspan">
+									<span t-field="line.name"/>
+								</td>
+								<t t-set="current_section" t-value="line"/>
+								<t t-set="current_subtotal" t-value="0"/>
+							</t>
+							<t t-if="line.display_type == 'line_note'">
+								<td t-att-colspan="colspan">
+									<span t-field="line.name"/>
+								</td>
+							</t>
+						</tr>
+
+						<t t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')">
+							<tr class="is-subtotal text-right">
+								<td t-att-colspan="colspan">
+									<strong class="mr16">Subtotal</strong>
+									<span
+										t-esc="current_subtotal"
+										t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'
+									/>
+								</td>
+							</tr>
+						</t>
+					</t>
+				</tbody>
+				</table>
+			</xpath>
+		</template>
+
+		<!-- Inherit Account Invoice Reeport -->
+		<template id="report_account_invoice_inherit" inherit_id="account.report_invoice_document">
+			<xpath expr="//div[hasclass('page')]/table[@name='invoice_line_table']" position="replace">
+				<table t-attf-class="table table-sm" name="invoice_line_table">
+				<thead>
+					<tr>
+						<th>Model #</th>
+						<th>License Plate</th>
+						<th>Description</th>
+						<th class="text-right">Quantity</th>
+						<th class="text-right">Unit Price</th>
+						<th t-if="display_discount" class="text-right">Disc.(%)</th>
+						<th class="text-right">Taxes</th>
+						<th class="text-right">Tax Excluded Price</th>
+					</tr>
+				</thead>
+				<tbody class="invoice_tbody">
+					<tr t-foreach="o.invoice_line_ids" t-as="l">
+						<td>
+							<span t-field="l.car_model" />
+						</td>
+						<td>
+							<span t-field="l.license_plate" />
+						</td>
+						<td><span t-field="l.name"/></td>
+						<td class="text-right">
+							<span t-field="l.quantity"/>
+							<span t-field="l.uom_id"  groups="product.group_uom"/>
+						</td>
+						<td class="text-right">
+							<span t-field="l.price_unit"/>
+						</td>
+						<td t-if="display_discount" class="text-right">
+							<span t-field="l.discount"/>
+						</td>
+						<td class="text-right">
+							<span t-esc="', '.join(map(lambda x: (x.description or x.name), l.tax_ids))"/>
+						</td>
+						<td class="text-right">
+							<span t-field="l.price_subtotal" 
+								t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</xpath>
+		</template>
+
+	</data>
+</odoo>

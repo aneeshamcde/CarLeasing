@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="wkf_repair" model="workflow">
+            <field name="name">fleet.repair.basic</field>
+            <field name="osv">fleet.repair</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <!-- Activity -->
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+        
+        <record id="act_confirm" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">confirm</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'confirm'})</field>
+        </record>
+        
+        <record id="act_diagnosis" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">diagnosis</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'diagnosis'})</field>
+        </record>
+     
+        <record id="act_quote" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">quotation</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'quote'})</field>
+        </record>
+
+        <record id="act_salesorder" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">sales order</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'saleorder'})</field>
+        </record>
+        
+        <record id="act_workorder" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">workorder</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'workorder'})</field>
+        </record>
+        
+        <record id="act_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">done</field>
+            <field name="flow_stop">True</field>
+            <!--field name="kind">function</field>
+            <field name="action">action_done()</field>
+            <field name="join_mode">AND</field-->
+        </record>
+
+        <record id="act_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">cancel</field>
+            <field name="flow_stop">True</field>
+            <!--field name="kind">stopall</field>
+            <field name="action">action_cancel()</field-->
+        </record>
+
+        <!-- Transistion -->
+
+        <record id="trans_draft_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_confirm"/>
+            <field name="signal">fleet_confirmed</field>
+        </record>
+        <record id="trans_confirm_diagnosis" model="workflow.transition">
+            <field name="act_from" ref="act_confirm"/>
+            <field name="act_to" ref="act_diagnosis"/>
+            <field name="signal">diagnosis_created</field>
+        </record>
+        <record id="trans_draft_router" model="workflow.transition">
+            <field name="act_from" ref="act_diagnosis"/>
+            <field name="act_to" ref="act_quote"/>
+            <field name="signal">quote_created</field>
+        </record>
+        <record id="trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_quote"/>
+            <field name="act_to" ref="act_salesorder"/>
+            <field name="signal">order_confirm</field>
+        </record>
+        <record id="trans_sent_router" model="workflow.transition">
+            <field name="act_from" ref="act_salesorder"/>
+            <field name="act_to" ref="act_workorder"/>
+            <field name="signal">workorder_created</field>
+        </record>
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_workorder"/>
+            <field name="act_to" ref="act_done"/>
+            <field name="signal">done</field>
+        </record>
+        
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_diagnosis"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_quote"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_salesorder"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_sent_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_workorder"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        
+    </data>
+</odoo>

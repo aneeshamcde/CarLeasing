@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+<!--fleet Diagnose Form View-->
+
+		<record id="view_fleet_diagnose_form" model="ir.ui.view">
+			<field name="name">fleet.diagnose.form</field>
+			<field name="model">fleet.diagnose</field>
+			<field name="arch" type="xml">
+				<form string="Car Diagnosis" create='false'>
+					<header>
+						<button name="action_create_quotation" string="Create Quotation" type="object" class="oe_highlight" style="float:left;" states="in_progress" groups="car_repair_industry.group_fleet_repair_service_manager"/>
+						<button name="%(action_fleet_diagnose_assign_to_technician)d" string="Assign to Technician" states="draft" type="action" class="oe_highlight" style="float:left;" groups="car_repair_industry.group_fleet_repair_head_technician,car_repair_industry.group_fleet_repair_directeur_commercial,car_repair_industry.group_fleet_repair_service_manager"/>
+
+
+						<!--<button name="action_view_sale_order" string="View Sales Order" type="object" class="oe_highlight" attrs="{'invisible': [('sale_order_id', '=', False)]}" style="float:left;"/>
+						<button name="action_view_fleet_repair" string="View Car Repair" type="object" attrs="{'invisible': [('fleet_repair_id', '=', False)]}" style="float:left;"/>-->
+						
+						<field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+					</header>
+					<sheet string="Car Diagnosis">
+					
+					<div class="oe_button_box" name="button_box">
+						 
+						 <button type="object"
+							name="button_view_workorder"
+							class="oe_stat_button"
+							icon="fa-wrench"
+							attrs="{'invisible': [('workorder_count', '=', 0)]}" groups="base.group_user">
+							<field name="workorder_count" widget="statinfo" string="Work Order"/>
+						</button>
+							
+							
+						<button type="object"
+							name="button_view_repair"
+							class="oe_stat_button"
+							icon="fa-truck"
+							attrs="{'invisible': [('fleet_repair_count', '=', 0)]}" groups="base.group_user">
+							<field name="fleet_repair_count" widget="statinfo" string="Repair Order"/>
+						</button>
+				  
+						<button type="object"
+							name="button_view_quotation"
+							class="oe_stat_button"
+							icon="fa-usd"
+							attrs="{'invisible': [('quotation_count', '=', 0)]}" groups="base.group_user">
+							<field name="quotation_count" widget="statinfo" string="Quotations"/>
+						</button>
+				  
+			   
+						<button type="object"
+							name="button_view_saleorder"
+							class="oe_stat_button"
+							icon="fa-usd"
+							attrs="{'invisible': [('saleorder_count', '=', 0)]}" groups="base.group_user">
+							<field name="saleorder_count" widget="statinfo" string="Sales Orders"/>
+						</button>
+				  
+			   
+			   
+						<button type="object"
+							name="button_view_invoice"
+							class="oe_stat_button"
+							icon="fa-truck"
+							attrs="{'invisible': [('inv_count', '=', 0)]}" groups="base.group_user">
+							<field name="inv_count" widget="statinfo" string="Invoices"/>
+						</button>
+					
+					</div>
+					
+						<div class="oe_title oe_left">
+							<h1>
+								<field name="service_rec_no"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="name" readonly="True"/>
+								<field name="user_id" readonly="True"/>
+							</group>
+							<group>
+								<field name="priority" widget="priority" readonly="True"/>
+								<field name="receipt_date" readonly="True"/>
+								<field name="fleet_repair_id" invisible='True'/>
+								<field name="sale_order_id" invisible='True'/>
+							</group>
+						</group>
+						<notebook>
+							<page string="General">
+								<group string="Client Info">
+									<group>
+										<field name="client_id"  context="{'show_address': 1}" options='{"always_reload": True}' readonly="True"/>
+										<field name="contact_name" readonly="True"/>
+									</group>
+									<group>
+										<field name="client_phone" readonly="True"/>
+										<field name="client_mobile" readonly="True"/>
+										<field name="client_email" widget="email" readonly="True"/>
+										<field name="phone" readonly="True"/>
+									</group>
+									
+								</group>
+								<separator string="Car Info"/>
+								<field name="fleet_repair_line" context="{'diagnose_id': active_id, 'active_model': 'fleet.diagnose'}" />
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>                    
+				</form>
+			</field>
+		</record>
+		
+<!--fleet Diagnose Tree View-->
+
+		<record id="view_fleet_diagnose_tree" model="ir.ui.view">
+			<field name="name">Fleet.diagnose.tree</field>
+			<field name="model">fleet.diagnose</field>
+			<field name="priority">4</field>
+			<field name="arch" type="xml">
+				<tree string="Car Diagnosis" create="false" edit="false">
+					<field name="name" string="Subject"/>
+					<field name="client_id"/>
+					<field name="receipt_date"/>
+					<field name="user_id"/>
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="view_fleet_diagnose_filter" model="ir.ui.view">
+			<field name="name">fleet.diagnose.list.select</field>
+			<field name="model">fleet.diagnose</field>
+			<field name="arch" type="xml">
+				<search string="Search Car Diagnoses">
+					<field name="service_rec_no"/>
+					<field name="name" string="Diagnose" />
+					<field name="client_id" operator="child_of"/>
+					<field name="fleet_repair_id"/>
+					<separator/>
+			   </search>
+			</field>
+		</record>
+		
+<!--fleet Diagnose Action-->
+		
+		<record model="ir.actions.act_window" id="action_fleet_diagnose_tree_view">
+			<field name="name">Car Diagnosis</field>
+			<field name="res_model">fleet.diagnose</field>
+			
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" ref="view_fleet_diagnose_filter"/>
+			<field name="view_id" ref="view_fleet_diagnose_tree"/>
+		</record>
+
+		<record id="view_spare_part_line_tree" model="ir.ui.view">
+			<field name="name">spare.part.line.tree</field>
+			<field name="model">spare.part.line</field>
+			<field name="priority">4</field>
+			<field name="arch" type="xml">
+				<tree editable="bottom">
+					<field name="product_id"/>
+					<field name="quantity"/>
+					<field name="default_code"/>
+					<field name="price_unit"/>
+				</tree>
+			</field>
+		</record>
+		
+		
+		<menuitem name="Car Diagnosis" parent="menu_fleet_repair" id="menu_fleet_diagnosis_submenu" sequence="7" action="action_fleet_diagnose_tree_view"/>
+		
+	</data>
+</odoo>        

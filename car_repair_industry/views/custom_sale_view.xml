@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Custom Sale Order View-->        
+
+        <record id="custom_view_order_form" model="ir.ui.view">
+            <field name="name">sale.order.form.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='date_order']" position="after">
+                    <field name="diagnose_id" invisible="1"/>
+                    <field name="workorder_id" invisible="1"/>
+                    <field name="fleet_repair_id"  invisible="1"/>
+                </xpath>
+                <!-- <xpath expr="//form/header/button[@name='action_cancel']" position="replace">
+                    <button name="action_cancel" states="manual,sale,workorder" string="Cancel Order" type="object"/>
+                </xpath> -->
+               <!--  <xpath expr="//form/header/button[@name='action_quotation_send']" position="replace">
+                    <button name="print_quotation" string="Print" type="object" states="draft,workorder" class="oe_highlight"/>
+                </xpath> -->
+                <xpath expr="//form/header/button[@name='action_quotation_send']" position="after">
+                    <button name="action_view_work_order" string="View Work Order" type="object" attrs="{'invisible': ['|', ('workorder_id', '=', False), ('state', '!=', 'sale')]}" style="float:left;"/>
+                </xpath>
+                
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button type="object"
+                        name="button_view_repair"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        attrs="{'invisible': [('count_fleet_repair', '=', 0)]}" groups="base.group_user">
+                        <field name="count_fleet_repair" widget="statinfo" string="Repair Order"/>
+                    </button>
+                    
+                    <button type="object"
+                        name="button_view_workorder"
+                        class="oe_stat_button"
+                        icon="fa-wrench"
+                        attrs="{'invisible': [('workorder_count', '=', 0)]}" groups="base.group_user">
+                        <field name="workorder_count" widget="statinfo" string="Work Order"/>
+                    </button>
+                </xpath>
+                
+                <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                	<field name="car_model"/>	
+                	<field name="license_plate"/>	
+                </xpath>
+                
+            </field>
+        </record>
+        
+
+        <record id="custom_view_invoice_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.custom</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_payment_term_id']" position="after">
+                    <field name="create_form_fleet"  invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_quotations" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('draft','sent','cancel')),('diagnose_id','!=',False)]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+
+
+        <record id="action_saleorder" model="ir.actions.act_window">
+            <field name="name">Sales Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('sale','done','cancel')),('diagnose_id','!=',False) ]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+
+        <record id="custom_invoice_view_order_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.custom</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
+                	<field name="car_model"/>	
+                	<field name="license_plate"/>	
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_invoice_tree1" model="ir.actions.act_window">
+            <field name="name">Customer Invoices</field>
+            <field name="res_model">account.move</field>
+             <field name="view_mode">tree,kanban,form</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('create_form_fleet','=',True),('move_type','in',('out_invoice', 'out_refund'))]</field>
+            <field name="context">{'move_type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a customer invoice.
+              </p><p>
+                Odoo's electronic invoicing allows to ease and fasten the
+                collection of customer payments. Your customer receives the
+                invoice by email and he can pay online and/or import it
+                in his own system.
+              </p><p>
+                The discussions with your customer are automatically displayed at
+                the bottom of each invoice.
+              </p>
+            </field>
+        </record>
+
+
+
+        <record id="action_invoice_tree1_view11" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.view_invoice_tree"/>
+            <field name="act_window_id" ref="action_invoice_tree1"/>
+        </record>
+
+        <record id="action_invoice_tree1_view22" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.view_move_form"/>
+            <field name="act_window_id" ref="action_invoice_tree1"/>
+        </record>
+        
+
+        <menuitem name="Billing"
+            	id="menu_quotation"
+            	parent = "base.menu_base_fleet_repair"
+                sequence="4"/>
+       <menuitem name="Quotations"
+            	id="menu_quotation_sub"
+            	parent = "menu_quotation"
+            	action = "action_quotations"
+				groups="group_fleet_repair_directeur_commercial,group_fleet_repair_service_manager"
+                sequence="0"/>
+
+       <menuitem name="Sales Order"
+            	id="menu_sale_order_sub"
+            	parent = "menu_quotation"
+            	action = "action_saleorder"
+            	groups="group_fleet_repair_directeur_commercial,group_fleet_repair_service_manager"
+                sequence="1"/>
+
+        <menuitem name="Invoices"
+            	id="menu_sale_order_sub1"
+            	parent = "menu_quotation"
+            	action = "action_invoice_tree1"
+            	groups="group_fleet_repair_directeur_commercial,group_fleet_repair_service_manager"
+                sequence="2"/>
+        
+    </data>
+</odoo>        

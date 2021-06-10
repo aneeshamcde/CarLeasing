@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record model="res.groups" id="group_multi_branches">
+            <field name="name">Multi Branches</field>
+            <field name="category_id" ref="base.module_category_usability"/>
+        </record>
+
+    </data>
+</odoo>

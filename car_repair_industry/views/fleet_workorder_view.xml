@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_fleet_workorder_form" model="ir.ui.view">
+            <field name="name">fleet.workorder.form</field>
+            <field name="model">fleet.workorder</field>
+            <field name="arch" type="xml">
+                <form string="Work Orders" version="9.0">
+                    <header colspan="8">
+                            <button  name="action_start_working" string="Start" type="object" states="draft" help="Start Working" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial"/>
+                            <button  name="button_cancel" string="Cancel Order" type="object" states="draft,startworking" help="Cancel Order" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial"/>
+                            <button  name="button_draft" string="Set Draft" type="object" states="cancel" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial" help="Set to Draft"/>
+                            <button  name="button_resume" string="Resume" type="object" states="pause" help="Resume Work Order" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial"/>
+                            <button  name="button_pause" string="Pending" type="object" states="startworking" help="Pause Work Order" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial"/>
+                            <button  name="action_done" string="Finished" type="object" states="startworking" help="Finish Order" groups="car_repair_industry.group_fleet_repair_technician,car_repair_industry.group_fleet_repair_directeur_commercial"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,startworking,done"/>
+                    </header>
+                    <sheet string="Work Orders">
+                    
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                name="button_view_repair"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                attrs="{'invisible': [('count_fleet_repair', '=', 0)]}" groups="base.group_user">
+                                <field name="count_fleet_repair" widget="statinfo" string="Repair Order"/>
+                            </button>
+                        
+                        
+                      		<button type="object"
+                                name="button_view_diagnosis"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square"
+                                attrs="{'invisible': [('count_dig', '=', 0)]}" groups="base.group_user">
+                                <field name="count_dig" widget="statinfo" string="Diagnoses"/>
+                            </button>
+                            
+                            <button type="object"
+                                name="button_view_saleorder"
+                                class="oe_stat_button"
+                                icon="fa-usd"
+                                attrs="{'invisible': [('saleorder_count', '=', 0)]}" groups="base.group_user">
+                                <field name="saleorder_count" widget="statinfo" string="Sales Orders"/>
+                            </button>
+                        </div>
+                    
+                        <div class="oe_title oe_left">
+                            <h1>
+                                <field name="sequence"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" readonly="True"/>
+                                <field name="client_id" readonly="True"/>
+                                <field name="sale_order_id" invisible="True"/>
+                                <field name="confirm_sale_order" invisible="True"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="True"/>
+                                <field name="priority" widget="priority" readonly="True"/>
+                                <field name="fleet_repair_id" invisible="True"/>
+                                <field name="diagnose_id" invisible="True"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <!--page string="Spare Part Lines">
+                                <field name="spare_part_ids" readonly="True">
+                                    <tree string="Spare Parts" editable="bottom">
+                                        <field name="product_id" on_change="onchange_product_id(product_id)"/>
+                                        <field name="default_code"/>
+                                        <field name="quantity"/>
+                                        <field name="fleet_id" domain="[('workorder_id', '=', parent.id)]"/>
+                                    </tree>
+                                </field>
+                            </page-->
+                            <page string="Information">
+                                <group>
+                                    <group string="Planned Date">
+                                        <field name="date_planned"/>
+                                        <field name="date_planned_end"/>
+                                    </group>
+                                    <group string="Duration">
+                                        <field name="hour" widget="float_time"/>
+                                    </group>
+                                </group>
+                                <group string="Actual Repairing Date">
+                                    <group>
+                                        <field name="date_start"/>
+                                        <field name="date_finished"/>
+                                    </group>
+                                    <group>
+                                        <field name="delay" widget="float_time" string="Duration"/>
+                                        <field name="hours_worked"/>
+                                    </group>
+                                </group>
+                                <separator string="fleet Info"/>
+                                <field name="fleet_repair_line" readonly="True"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>                    
+                </form>
+            </field>
+        </record>        
+        
+<!--fleet Repair Tree View-->
+
+        <record id="view_fleet_workorder_tree" model="ir.ui.view">
+            <field name="name">fleet.workorder.tree</field>
+            <field name="model">fleet.workorder</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <tree string="Work Orders">
+                    <field name="name" string="Work Order"/>
+                    <field name="phone"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_fleet_workorder_filter" model="ir.ui.view">
+            <field name="name">fleet.workorder.list.select</field>
+            <field name="model">fleet.workorder</field>
+            <field name="arch" type="xml">
+                <search string="Search fleet WorkOrder">
+                    <field name="sequence"/>
+                    <field name="name" string="WorkOrder" />
+                    <field name="fleet_repair_id"/>
+                    <separator/>
+               </search>
+            </field>
+        </record>
+                        
+<!--Action-->
+        
+        <record model="ir.actions.act_window" id="action_fleet_workorder_tree_view">
+            <field name="name">Work Orders</field>
+            <field name="res_model">fleet.workorder</field>
+            
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_fleet_workorder_filter"/>
+            <field name="view_id" ref="view_fleet_workorder_tree"/>
+        </record>
+
+<!--Menuitems-->        
+
+        <menuitem name="Work Orders" parent="menu_fleet_repair" id="menu_fleet_workorder_submenu" sequence="10" action="action_fleet_workorder_tree_view"/>
+    </data>
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="fleet_repair_label_template_view">
+            <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="o.fleet_repair_line" t-as="line">
+                    <div class="page">
+                        <br/>
+                            <div>
+                                <table style="font-size:20; margin-bottom: 3px; width: 100%;line-height: 200%;" class="col-xs-12">
+                                    <tr>
+                                        <td style="font-weight: bold;text-align: left;">
+                                            <span t-field="o.sequence" />
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span t-field="o.receipt_date"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width="100%" style="font-size:20;width: 100%; text-align: left; margin-bottom: 3px;line-height: 200%;">
+                                    <tr>
+                                        <td width="20%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;">Client</span>
+                                        </td>
+                                        <td width="80%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;" t-field="o.client_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;">Car</span>
+                                        </td>
+                                        <td width="80%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;" t-if="line.fleet_id" t-field="line.fleet_id.name"/>
+                                            <span style="margin-left: 5px;" t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                             <span style="margin-left: 5px;">N° Serial</span>
+                                        </td>
+                                        <td width="80%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;" t-field="line.model_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;">Service</span>
+                                        </td>
+                                        <td width="80%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;" t-field="line.service_type.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" style="text-align: left; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <span style="margin-left: 5px;">Description</span>
+                                        </td>
+                                        <td width="80%" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px;">
+                                            <p style="margin-left: 5px;"><span t-field="line.service_detail"/></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                    <!--p style="page-break-after: always"/-->
+                    </div>
+                </t>
+                </t>	
+            </t>
+		</template>
+        <template id="machi_rep_label_temp_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="car_repair_industry.fleet_repair_label_template_view" t-lang="o.client_id.lang"/>
+                </t>
+            </t>
+        </template>
+	</data>
+</odoo>

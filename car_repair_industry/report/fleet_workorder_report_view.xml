@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="fleet_workorder_template_view">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <br/><br/><br/><br/><br/><br/><br/>
+                  <t t-foreach="docs" t-as="o">
+                    <br/>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <table>
+                                    <tr>
+                                        <td style="width: 100%; height: 22px; padding-left:10px;">
+                                            <b><span>Client Address</span></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span t-field="o.client_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span t-field="o.client_id.street"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span t-field="o.client_id.street2"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <div style="width: 100%">
+                                                <span style="width: 40%" t-field="o.client_id.city"/>,
+                                                <span style="width: 20%" t-field="o.client_id.state_id.code"/>,
+                                                <span style="width: 40%" t-field="o.client_id.zip"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span t-field="o.client_id.country_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.fleet_repair_id.client_phone">
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span style="font-weight: bold;">Phone:</span>
+                                            <span t-field="o.fleet_repair_id.client_phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.fleet_repair_id.phone">
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span style="font-weight: bold;">Contact Number:</span>
+                                            <span t-field="o.fleet_repair_id.phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.fleet_repair_id.client_mobile">
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span style="font-weight: bold;">Mobile:</span>
+                                            <span t-field="o.fleet_repair_id.client_mobile"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.fleet_repair_id.client_email">
+                                        <td style="width: 100%;padding-left:10px;">
+                                            <span style="font-weight: bold;">Email:</span>
+                                            <span t-field="o.fleet_repair_id.client_email"/>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="col-xs-3">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="padding-left:10px; height: 22px; padding-top: 5px;">
+                                            <strong>Contact Name</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:10px; text-align: left;">
+                                            <span t-field="o.client_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:10px;">
+                                            <strong>Tel: </strong>
+                                            <span t-field="o.client_id.mobile"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="col-xs-3">
+                                <table style="width:100%">
+                                    <tr style="height:22px;">
+                                        <td style="width:16%;padding:3px;padding-left:10px;">
+                                            <b><span >Date of Receipt</span></b>
+                                        </td>
+                                    </tr>
+                                    <tr style="height: 22px">
+                                        <td style="padding:3px;padding-left:10px;">
+                                            <!--<span t-esc="_get_date(o)"/> -->
+                                            <span t-field="o.date"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <h3 style="margin-top: 30px; font-weight: bold;">
+                            <span t-if="o.sequence">Receipt  </span>
+                            <span t-field="o.sequence"/>
+                        </h3>       
+                        <div>
+                            <table style="width: 100%; margin-top: 50px;font-size:12;text-align: center">
+                                <thead>
+                                    <tr style="height: 22px; border-bottom: 2px solid black;">
+                                        <th style="width:25%;padding:3px; text-align: left">
+                                            <b><span>CAR</span></b>
+                                        </th>
+                                        <th style="width:20%;padding:3px; text-align: center">
+                                            <b><span>MODEL NUMBER</span></b>
+                                        </th>
+                                        <th style="width:15%;padding:3px; text-align: center">
+                                            <b><span>SERIAL NUMBER</span></b>
+                                        </th>
+                                        <th style="width:15%;padding:3px; text-align: center">
+                                            <b><span>GUARANTEE</span></b>
+                                        </th>
+                                        <th style="width:25%;padding:3px; text-align: center">
+                                            <b><span>SERVICE TYPE</span></b>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.fleet_repair_line" t-as="line" style="height: 22px; border-color: #9D9D90;font-size:15">
+                                        <td style="padding:5px; text-align: left">
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+                                            <span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.license_plate"></span>
+                                            <span t-if="line.fleet_id is False and line.model_id.name" t-field="line.model_id.name"></span>
+                                        </td>
+
+                                        <td style="padding:5px;">
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+                                            <span t-if="line.fleet_id is False and line.vin_sn" t-field="line.vin_sn"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-field="line.guarantee"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-field="line.service_type"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <span style="font-size: 20.0; font-weight: bold;">SERVICE DETAILS:</span>
+                        </div>
+                        <div class="row">
+                            <table style="width: 100%; margin-top: 20px;">
+                                <tr t-foreach="o.fleet_repair_line" t-as="line">
+                                    <th style="width: 25%; height: 25px;border-right: 1px solid black;">
+                                        <b>
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"/>
+                                            <span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"/>
+                                        </b>
+                                    </th>
+                                    <td style="padding-left: 10px;">
+                                        <span t-field="line.service_detail"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="row" style="margin-top: 100px;">
+                            <span style="font-size: 20.0; font-weight: bold; margin-top: 20px;">DIAGNOSTIC RESULT:</span>
+                        </div>
+                        <div class ="row">
+                            <table style="width: 100%; font-size:12;text-align: center; margin-top: 20px;">
+                                <thead>
+                                    <tr style="height: 22px; border-bottom: 2px solid black;">
+                                        <th style="width:30%;padding:3px; text-align: left">
+                                            <b><span>car</span></b>
+                                        </th>
+                                        <th style="width:15%;padding:3px; text-align: center">
+                                            <b><span>SERIAL NUMBER</span></b>
+                                        </th>
+                                        <th style="width:30%;padding:3px; text-align: center">
+                                            <b><span>SPARE PART</span></b>
+                                        </th>
+                                        
+                                        <th style="width:15%;padding:3px; text-align: center">
+                                            <b><span>CODE</span></b>
+                                        </th>
+                                        <th style="width:10%;padding:3px; text-align: center">
+                                            <b><span>QUANTITY</span></b>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody t-foreach="o.fleet_repair_line" t-as="line">
+                                    <tr t-foreach="line.spare_part_ids" t-as="spare_line" style="height: 22px; border-color: #9D9D90;font-size:15">
+                                        <td style="padding:5px; text-align: left">
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+                                            <span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"></span>
+                                            <span t-if="line.fleet_id.name is False and line.model_id.name" t-field="line.model_id.name"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-if="spare_line.product_id" t-field="spare_line.product_id.name"></span>
+                                        </td>
+        
+                                        <td style="padding:5px;">
+                                            <span t-field="spare_line.default_code"></span>
+                                        </td>
+                                        <td style="padding:5px;">
+                                            <span t-field="spare_line.quantity"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12" style="margin-top: 50px;">
+                            <table style="width: 100%;">
+                                <tr t-foreach="o.fleet_repair_line" t-as="line">
+                                    <th style="width: 25%; height: 25px;border-right: 1px solid black;">
+                                        <b>
+                                            <span t-if="line.fleet_id" t-field="line.fleet_id.name"/>
+                                            <span t-if="line.fleet_id is False and line.license_plate" t-field="line.license_plate"/>
+                                        </b>
+                                    </th>
+                                    <td style="padding-left: 10px;">
+                                        <span t-field="line.diagnostic_result"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+                  </div>
+            </t>
+        </template>
+
+         <template id="fleet_workorder_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="car_repair_industry.fleet_workorder_template_view" t-lang="o.client_id.lang"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
